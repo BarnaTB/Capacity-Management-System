@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  acms-backend:
+    image: acms-backend
+    container_name: acms-backend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.dev
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/usr/src/app
+    command: >
+      bash -c "python manage.py wait_for_db &&
+        python manage.py migrate &&
+        python manage.py collectstatic --noinput &&
+        gunicorn acms.wsgi:application -w 2 -b 0.0.0.0:8000 --reload"
+    env_file:
+      - .env
+    environment:
+      LAUNCH_TYPE: webserver
+    links:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: acms-rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  celery:
+    image: acms-celery
+    container_name: acms-celery
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.dev
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - .env
+    environment:
+      LAUNCH_TYPE: worker
+    command: >
+        bash -c "celery -A acms worker -E -l INFO --concurrency=1 &
+          celery -A acms worker -E -l INFO -n worker.low -Q low --concurrency=1 &
+          celery -A acms worker -E -l INFO -n worker.high -Q high --concurrency=1"
+    depends_on:
+      - rabbitmq
+      - acms-backend
+volumes:
+  rabbitmq_data:
+  static_volume:

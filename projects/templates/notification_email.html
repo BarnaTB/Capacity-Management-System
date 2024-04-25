@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Assignment Notification</title>
+</head>
+<body>
+    <div style="width:85%;margin:auto;">
+        <p style="font-family: 'Roboto', sans-serif;font-size: 1.2em;font-weight: 400;line-height: 1.55;color: #222222;margin: 10px 0 30px;padding: 44px 34px 44px 34px;background-color: #ffffff;border-radius: 8px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 210, 190, 129);">
+         Hello {{ developer_name }},<br /><br />
+
+You have been assigned to a new project on the Amalitech Capacity Management System. Please log in to your account to view the details of the project and to collaborate with other team members.
+<br /><br />
+Project Name: {{ project_name }}
+<br />
+Project Link: <a href="{{ project_link }}" style="color:#4CAF50">{{ project_link }}</a>
+<br /><br />
+Thank you for your contribution to our organization. If you have any questions or concerns about the project, please don't hesitate to contact your project manager.
+<br /><br />
+
+Best regards,<br>
+<span>Amalitech ACMS</span>
+        </p>
+    </div>
+</body>
+</html>
